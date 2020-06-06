@@ -12,6 +12,10 @@
         <servlet-name>ServletMenu</servlet-name>
         <servlet-class>servlets.ServletMenu</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServletMantPacience</servlet-name>
+        <servlet-class>servlets.ServletMantPacience</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServletMantDoctor</servlet-name>
         <url-pattern>/ServletMantDoctor</url-pattern>
@@ -24,8 +28,11 @@
         <servlet-name>ServletMenu</servlet-name>
         <url-pattern>/ServletMenu</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServletMantPacience</servlet-name>
+        <url-pattern>/ServletMantPacience</url-pattern>
+    </servlet-mapping>
     <session-config>
-        
         <session-timeout>
             30
         </session-timeout>

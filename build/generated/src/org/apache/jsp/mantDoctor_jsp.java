@@ -3,6 +3,10 @@ package org.apache.jsp;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.util.Locale;
+import java.text.SimpleDateFormat;
 import negocio.bo.DoctorBo;
 import negocio.clases.Doctor;
 import java.util.ArrayList;
@@ -56,56 +60,106 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\n");
       out.write("\n");
       out.write("\n");
+      out.write("\n");
+      out.write("\n");
+      out.write("\n");
+      out.write("\n");
       out.write("<!DOCTYPE html>\n");
       out.write("<html>\n");
       out.write("    <head>\n");
       out.write("        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
       out.write("        <title>JSP Page</title>\n");
+      out.write("        <style>\n");
+      out.write("            .input-error {\n");
+      out.write("                border: 0.125em solid #c0392b !important;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("\n");
+      out.write("        </style>\n");
       out.write("        <script type=\"text/javascript\">\n");
       out.write("            function validarDatos() {\n");
-      out.write("                // document.getElementById(\"oculto\").value = valor;\n");
-      out.write("                return true;\n");
+      out.write("                let aInputs = document.querySelectorAll('input[type=\"text\"]');\n");
+      out.write("                let aNumbers = document.querySelectorAll('input[type=\"number\"]');\n");
+      out.write("                let bError = true;\n");
+      out.write("\n");
+      out.write("\n");
+      out.write("\n");
+      out.write("                for (let i = 0; i < aInputs.length; i++) {\n");
+      out.write("                    if (aInputs[i].value === '') {\n");
+      out.write("                        bError = false;\n");
+      out.write("                        aInputs[i].classList.add('input-error');\n");
+      out.write("                    } else {\n");
+      out.write("                        aInputs[i].classList.remove('input-error');\n");
+      out.write("                    }\n");
+      out.write("                }\n");
+      out.write("                for (let i = 0; i < aNumbers.length; i++) {\n");
+      out.write("                    if (aNumbers[i].value === '') {\n");
+      out.write("                        bError = false;\n");
+      out.write("                        aNumbers[i].classList.add('input-error');\n");
+      out.write("                    } else {\n");
+      out.write("                        aNumbers[i].classList.remove('input-error');\n");
+      out.write("                    }\n");
+      out.write("                }\n");
+      out.write("                return bError;\n");
       out.write("            }\n");
       out.write("            function registrar() {\n");
       out.write("                if (validarDatos()) {\n");
-      out.write("                    document.getElementById(\"oculto\").value = \"REGISTRAR\";\n");
-      out.write("                    return true;\n");
+      out.write("                    if (isNaN(document.getElementById(\"txtCedula\"))) {\n");
+      out.write("                        alert(\"hola\");\n");
+      out.write("                    } else {\n");
+      out.write("                        document.getElementById(\"oculto\").value = \"REGISTRAR\";\n");
+      out.write("                        return true;\n");
+      out.write("                    }\n");
+      out.write("\n");
       out.write("                } else {\n");
+      out.write("                    alert(\"Por favor llenar espacios marcados\");\n");
       out.write("                    return false;\n");
       out.write("                }\n");
       out.write("            }\n");
       out.write("            function modificar(cedula) {\n");
       out.write("                if (validarDatos()) {\n");
+      out.write("                    alert(\"Doctor modificado\");\n");
       out.write("                    document.getElementById(\"oculto\").value = \"MODIFICAR\";\n");
       out.write("                    document.getElementById(\"seleccionado\").value = cedula;\n");
       out.write("                    return true;\n");
       out.write("                } else {\n");
+      out.write("                    alert(\"Por favor llenar espacios marcados\");\n");
       out.write("                    return false;\n");
       out.write("                }\n");
       out.write("            }\n");
       out.write("\n");
-      out.write("            function getById() {\n");
-      out.write("                if (validarDatos()) {\n");
+      out.write("            function getById(cedula) {\n");
+      out.write("                if (document.getElementById(\"txtCedula\").value !== \"\") {\n");
+      out.write("                    document.getElementById(\"txtCedula\").classList.remove('input-error');\n");
       out.write("                    document.getElementById(\"oculto\").value = \"GETBYID\";\n");
+      out.write("                    document.getElementById(\"seleccionado\").value = cedula;\n");
       out.write("                    return true;\n");
       out.write("                } else {\n");
+      out.write("                    alert(\"Agregar cédula a buscar\");\n");
+      out.write("                    document.getElementById(\"txtCedula\").classList.add('input-error');\n");
       out.write("                    return false;\n");
       out.write("                }\n");
       out.write("            }\n");
-      out.write("            function getByName() {\n");
-      out.write("                if (validarDatos()) {\n");
+      out.write("            function getByName(name) {\n");
+      out.write("                if (document.getElementById(\"txtNombre\").value !== \"\") {\n");
+      out.write("                    document.getElementById(\"txtNombre\").classList.remove('input-error');\n");
       out.write("                    document.getElementById(\"oculto\").value = \"GETBYNAME\";\n");
+      out.write("                    document.getElementById(\"seleccionado\").value = name;\n");
       out.write("                    return true;\n");
       out.write("                } else {\n");
+      out.write("                    document.getElementById(\"txtNombre\").classList.add('input-error');\n");
+      out.write("                    alert(\"Agregar nombre(s) a buscar\");\n");
       out.write("                    return false;\n");
       out.write("                }\n");
       out.write("            }\n");
       out.write("            function limpiar() {\n");
       out.write("                document.getElementById(\"oculto\").value = \"LIMPIAR\";\n");
+      out.write("                return true;\n");
       out.write("            }\n");
       out.write("            function eliminar(cedula) {\n");
       out.write("                document.getElementById(\"oculto\").value = \"ELIMINAR\";\n");
       out.write("                document.getElementById(\"eliminado\").value = cedula;\n");
+      out.write("                alert(\"Doctor eliminado\");\n");
       out.write("            }\n");
       out.write("            function seleccionar(cedula) {\n");
       out.write("                document.getElementById(\"oculto\").value = \"SELECCIONAR\";\n");
@@ -118,6 +172,34 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("    <body>\n");
       out.write("        ");
  if (session.getAttribute("nombreUsuario") != null) {
+
+                if (request.getAttribute("cedula") == null) {
+                    request.setAttribute("cedula", "");
+                }
+                if (request.getAttribute("nombre") == null) {
+                    request.setAttribute("nombre", "");
+                }
+                if (request.getAttribute("apellidos") == null) {
+                    request.setAttribute("apellidos", "");
+                }
+                if (request.getAttribute("especialidad") == null) {
+                    request.setAttribute("especialidad", "");
+                }
+
+                if (request.getAttribute("direccion") == null) {
+                    request.setAttribute("direccion", "");
+                }
+
+                if (request.getAttribute("salario") == null) {
+                    request.setAttribute("salario", "");
+                }
+                if (request.getAttribute("telefono") == null) {
+                    request.setAttribute("telefono", "");
+                }
+
+
+        
+      out.write("\n");
       out.write("\n");
       out.write("        <div style=\"text-align: right; margin-right: 30px;\">\n");
       out.write("            Hola ");
@@ -125,8 +207,8 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\n");
       out.write("            <br/>\n");
       out.write("            ");
-      out.print( new Date());
-      out.write("\n");
+      out.print( DateTimeFormatter.ofPattern("MM-dd-yyyy", Locale.ENGLISH).format(LocalDateTime.now()));
+      out.write(" \n");
       out.write("        </div>\n");
       out.write("\n");
       out.write("        <h1>Mantenimiento de Doctores</h1>\n");
@@ -135,9 +217,21 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                <tr>\n");
       out.write("                    <td>Cédula</td>\n");
       out.write("                    <td>\n");
+      out.write("                        ");
+ if (request.getAttribute("cedula") != "") {
+      out.write("\n");
+      out.write("                        <input type=\"text\" id=\"txtCedula\" name=\"cedula\" readonly=\"true\" value=\"");
+      out.print(request.getAttribute("cedula"));
+      out.write("\"/>\n");
+      out.write("                        ");
+ } else {
+      out.write("\n");
       out.write("                        <input type=\"text\" id=\"txtCedula\" name=\"cedula\" value=\"");
       out.print(request.getAttribute("cedula"));
       out.write("\"/>\n");
+      out.write("                        ");
+}
+      out.write("\n");
       out.write("                    </td>\n");
       out.write("                </tr>\n");
       out.write("                <tr>\n");

@@ -105,14 +105,7 @@ public class ServletMantDoctor extends HttpServlet {
                     }
                     break;
                 case "LIMPIAR":
-                    request.setAttribute("cedula", "");
-                    request.setAttribute("nombre", "");
-                    request.setAttribute("apellidos", "");
-                    request.setAttribute("especialidad", "");
-                    request.setAttribute("salario", "");
-                    request.setAttribute("direccion", "");
-                    request.setAttribute("telefono", "");
-                    request.getRequestDispatcher("mantDoctor.jsp").forward(request, response);
+                    response.sendRedirect("mantDoctor.jsp");
                     break;
                 case "MODIFICAR":
                     obj = new Doctor(
@@ -142,8 +135,8 @@ public class ServletMantDoctor extends HttpServlet {
                     break;
 
                 case "GETBYID":
-                    docBo.getById(Integer.parseInt(request.getParameter("cedula")));
-
+                    String cedula = request.getParameter("cedula");
+                    response.sendRedirect("mantDoctor.jsp?getbyid=" + cedula);
                     break;
                 case "GETBYNAME":
                     docBo.getByName(request.getParameter("nombre"));
