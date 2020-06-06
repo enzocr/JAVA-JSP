@@ -32,8 +32,6 @@
                 let aNumbers = document.querySelectorAll('input[type="number"]');
                 let bError = true;
 
-
-
                 for (let i = 0; i < aInputs.length; i++) {
                     if (aInputs[i].value === '') {
                         bError = false;
@@ -54,7 +52,7 @@
             }
             function registrar() {
                 if (validarDatos()) {
-                    if (isNaN(document.getElementById("txtCedula"))) {
+                    if (isNaN(document.getElementById("txtCedula").value)) {
                         document.getElementById("txtCedula").classList.add('input-error');
                         alert("Favor solo ingresar números en la cédula");
                         return false;
@@ -82,7 +80,7 @@
 
             function getById(cedula) {
                 if (document.getElementById("txtCedula").value !== "") {
-                    if (isNaN(document.getElementById("txtCedula"))) {
+                    if (isNaN(document.getElementById("txtCedula").value)) {
                         document.getElementById("txtCedula").classList.add('input-error');
                         alert("Favor solo ingresar números en la cédula");
                         return false;
@@ -92,6 +90,7 @@
                         document.getElementById("seleccionado").value = cedula;
                         return true;
                     }
+
                 } else {
                     alert("Agregar cédula a buscar");
                     document.getElementById("txtCedula").classList.add('input-error');
@@ -242,7 +241,20 @@
                 <%! List<Doctor> list = new ArrayList<>(); %>
                 <%! DoctorBo docBo = new DoctorBo();%>
                 <%
-                    this.list = docBo.getAll();
+                    if (request.getParameter("getbyid") != null) {
+                        int cedula = Integer.parseInt(request.getParameter("getbyid"));
+                        Doctor obj = this.docBo.getById(cedula);
+                        this.list = new ArrayList<>();
+                        if (obj == null) {
+                            out.print("<h4>No hay resultados</h4>");
+                        } else {
+                            list.add(obj);
+                        }
+
+                    } else {
+                        this.list = docBo.getAll();
+                    }
+
                     for (int i = 0; i < list.size(); i++) {
                         Doctor doc = list.get(i);
                         out.println("<tr>");

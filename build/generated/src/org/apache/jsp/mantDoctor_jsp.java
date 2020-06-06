@@ -105,7 +105,9 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            function registrar() {\n");
       out.write("                if (validarDatos()) {\n");
       out.write("                    if (isNaN(document.getElementById(\"txtCedula\"))) {\n");
-      out.write("                        alert(\"hola\");\n");
+      out.write("                        document.getElementById(\"txtCedula\").classList.add('input-error');\n");
+      out.write("                        alert(\"Favor solo ingresar números en la cédula\");\n");
+      out.write("                        return false;\n");
       out.write("                    } else {\n");
       out.write("                        document.getElementById(\"oculto\").value = \"REGISTRAR\";\n");
       out.write("                        return true;\n");
@@ -130,10 +132,12 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\n");
       out.write("            function getById(cedula) {\n");
       out.write("                if (document.getElementById(\"txtCedula\").value !== \"\") {\n");
+      out.write("\n");
       out.write("                    document.getElementById(\"txtCedula\").classList.remove('input-error');\n");
       out.write("                    document.getElementById(\"oculto\").value = \"GETBYID\";\n");
       out.write("                    document.getElementById(\"seleccionado\").value = cedula;\n");
       out.write("                    return true;\n");
+      out.write("\n");
       out.write("                } else {\n");
       out.write("                    alert(\"Agregar cédula a buscar\");\n");
       out.write("                    document.getElementById(\"txtCedula\").classList.add('input-error');\n");
@@ -315,7 +319,20 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\n");
       out.write("                ");
 
-                    this.list = docBo.getAll();
+                    if (request.getParameter("getbyid") != null) {
+                        int cedula = Integer.parseInt(request.getParameter("getbyid"));
+                        Doctor obj = this.docBo.getById(cedula);
+                        this.list = new ArrayList<>();
+                        if (obj == null) {
+                            out.print("<h4>No hay resultados</h4>");
+                        } else {
+                            list.add(obj);
+                        }
+
+                    } else {
+                        this.list = docBo.getAll();
+                    }
+
                     for (int i = 0; i < list.size(); i++) {
                         Doctor doc = list.get(i);
                         out.println("<tr>");
