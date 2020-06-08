@@ -7,19 +7,23 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import negocio.bo.DoctorBo;
-import negocio.clases.Doctor;
+import negocio.bo.PacienteBo;
+import negocio.clases.Paciente;
+import utilities.SwingUtilities;
 
 /**
  *
  * @author Enzo Quartino Zamora
  * <github.com/enzocr || email: enzoquartino@gmail.com>
  */
-public class ServletMantDoctor extends HttpServlet {
+public class ServletMantPaciente extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,23 +45,22 @@ public class ServletMantDoctor extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
 
-            DoctorBo docBo = new DoctorBo();
-            Doctor obj;
+            PacienteBo pacBo = new PacienteBo();
+            Paciente obj;
             String accion = request.getParameter("accion");
-
+            String fecha = request.getParameter("fechaNacimiento");
             switch (accion) {
                 case "REGISTRAR":
-                    obj = new Doctor(
-                            Integer.parseInt(request.getParameter("cedula")),
+                    obj = new Paciente(
+                            Integer.parseInt(request.getParameter("numAsegurado")),
                             request.getParameter("nombre"),
-                            request.getParameter("apellidos"),
-                            request.getParameter("especialidad"),
-                            new Double(request.getParameter("salario")),
                             request.getParameter("direccion"),
-                            Integer.parseInt(request.getParameter("telefono"))
-                    );
+                            SwingUtilities.stringToDate(fecha),
+                            request.getParameter("email"),
+                            Integer.parseInt(request.getParameter("telefono")),
+                            request.getParameter("profesion"));
 
-                    switch (docBo.insert(obj)) {
+                    switch (pacBo.insert(obj)) {
                         case 0:
                             out.print("<h1>Agregado</h>");
                             break;
@@ -73,20 +76,20 @@ public class ServletMantDoctor extends HttpServlet {
                     }
                     break;
                 case "SELECCIONAR":
-                    obj = docBo.getById(Integer.parseInt(request.getParameter("seleccionado")));
-                    request.setAttribute("cedula", obj.getCedula());
+                    obj = pacBo.getById(Integer.parseInt(request.getParameter("seleccionado")));
+                    request.setAttribute("numAsegurado", obj.getNumAsegurado());
                     request.setAttribute("nombre", obj.getNombre());
-                    request.setAttribute("apellidos", obj.getApellido());
-                    request.setAttribute("especialidad", obj.getEspecialidad());
-                    request.setAttribute("salario", obj.getSalario());
                     request.setAttribute("direccion", obj.getDireccion());
+                    request.setAttribute("fechaNacimiento", obj.getFechaNacimiento());
+                    request.setAttribute("email", obj.getEmail());
                     request.setAttribute("telefono", obj.getTelefono());
-                    request.getRequestDispatcher("mantDoctor.jsp").forward(request, response);
+                    request.setAttribute("profesion", obj.getProfesion());
+                    request.getRequestDispatcher("mantPaciente.jsp").forward(request, response);
                     break;
                 case "ELIMINAR":
-                    obj = docBo.getById(Integer.parseInt(request.getParameter("eliminado")));
+                    obj = pacBo.getById(Integer.parseInt(request.getParameter("eliminado")));
 
-                    switch (docBo.delete(obj)) {
+                    switch (pacBo.delete(obj)) {
                         case 0:
                             out.print("<h1>NO eliminado</h>");
                             break;
@@ -105,20 +108,19 @@ public class ServletMantDoctor extends HttpServlet {
                     }
                     break;
                 case "LIMPIAR":
-                    response.sendRedirect("mantDoctor.jsp");
+                    response.sendRedirect("mantPaciente.jsp");
                     break;
                 case "MODIFICAR":
-                    obj = new Doctor(
-                            Integer.parseInt(request.getParameter("cedula")),
+                    obj = new Paciente(
+                            Integer.parseInt(request.getParameter("numAsegurado")),
                             request.getParameter("nombre"),
-                            request.getParameter("apellidos"),
-                            request.getParameter("especialidad"),
-                            new Double(request.getParameter("salario")),
                             request.getParameter("direccion"),
-                            Integer.parseInt(request.getParameter("telefono"))
-                    );
+                            SwingUtilities.stringToDate(fecha),
+                            request.getParameter("email"),
+                            Integer.parseInt(request.getParameter("telefono")),
+                            request.getParameter("profesion"));
 
-                    switch (docBo.update(obj)) {
+                    switch (pacBo.update(obj)) {
                         case 0:
                             out.print("<h1>Modificado</h>");
                             break;
@@ -135,19 +137,21 @@ public class ServletMantDoctor extends HttpServlet {
                     break;
 
                 case "GETBYID":
-                    String cedula = request.getParameter("cedula");
-                    response.sendRedirect("mantDoctor.jsp?getbyid=" + cedula);
+                    String numAsegurado = request.getParameter("numAsegurado");
+                    response.sendRedirect("mantPaciente.jsp?getbyid=" + numAsegurado);
                     break;
                 case "GETBYNAME":
                     String nombre = request.getParameter("nombre");
-                    response.sendRedirect("mantDoctor.jsp?getbyname=" + nombre);
+                    response.sendRedirect("mantPaciente.jsp?getbyname=" + nombre);
                     break;
             }
 
             out.println("<br/>");
-            out.println("<a href=\"mantDoctor.jsp\">Volver</a>");
+            out.println("<a href=\"mantPaciente.jsp\">Volver</a>");
             out.println("</body>");
             out.println("</html>");
+        } catch (ParseException ex) {
+            Logger.getLogger(ServletMantPaciente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -164,6 +168,7 @@ public class ServletMantDoctor extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+
     }
 
     /**
@@ -177,7 +182,9 @@ public class ServletMantDoctor extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         processRequest(request, response);
+
     }
 
     /**

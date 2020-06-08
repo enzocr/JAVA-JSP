@@ -13,8 +13,12 @@
         <servlet-class>servlets.ServletMenu</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ServletMantPacience</servlet-name>
-        <servlet-class>servlets.ServletMantPacience</servlet-class>
+        <servlet-name>ServletMantPaciente</servlet-name>
+        <servlet-class>servlets.ServletMantPaciente</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServletMantHerramientaMedica</servlet-name>
+        <servlet-class>servlets.ServletMantHerramientaMedica</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ServletMantDoctor</servlet-name>
@@ -29,8 +33,12 @@
         <url-pattern>/ServletMenu</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ServletMantPacience</servlet-name>
-        <url-pattern>/ServletMantPacience</url-pattern>
+        <servlet-name>ServletMantPaciente</servlet-name>
+        <url-pattern>/ServletMantPaciente</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServletMantHerramientaMedica</servlet-name>
+        <url-pattern>/ServletMantHerramientaMedica</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -4,11 +4,12 @@
     Author     : Enzo Quartino Zamora <github.com/enzocr || email: enzoquartino@gmail.com>
 --%>
 
+<%@page import="negocio.clases.Paciente"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
 <%@page import="java.time.LocalDateTime"%>
 <%@page import="java.util.Locale"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="negocio.bo.DoctorBo"%>
+<%@page import="negocio.bo.PacienteBo"%>
 <%@page import="negocio.clases.Doctor"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
@@ -32,6 +33,8 @@
                 let aNumbers = document.querySelectorAll('input[type="number"]');
                 let bError = true;
 
+
+
                 for (let i = 0; i < aInputs.length; i++) {
                     if (aInputs[i].value === '') {
                         bError = false;
@@ -48,6 +51,9 @@
                         aNumbers[i].classList.remove('input-error');
                     }
                 }
+
+
+
                 return bError;
             }
             function registrar() {
@@ -55,24 +61,22 @@
                     if (isNaN(document.getElementById("txtNombre").value)) {
                         document.getElementById("txtNombre").classList.remove('input-error');
                         document.getElementById("oculto").value = "REGISTRAR";
-                        document.getElementById("seleccionado").value = cedula;
+                        document.getElementById("seleccionado").value = numAsegurado;
                         return true;
                     } else {
                         document.getElementById("txtNombre").classList.add('input-error');
                         alert("Favor solo ingresar letras en el nombre");
                         return false;
                     }
-
                 } else {
                     alert("Por favor llenar espacios marcados");
                     return false;
                 }
             }
-            function modificar(cedula) {
+            function modificar(numAsegurado) {
                 if (validarDatos()) {
-                    alert("Doctor modificado");
                     document.getElementById("oculto").value = "MODIFICAR";
-                    document.getElementById("seleccionado").value = cedula;
+                    document.getElementById("seleccionado").value = numAsegurado;
                     return true;
                 } else {
                     alert("Por favor llenar espacios marcados");
@@ -80,18 +84,15 @@
                 }
             }
 
-            function getById(cedula) {
-                if (document.getElementById("txtCedula").value !== "") {
-
-                    document.getElementById("txtCedula").classList.remove('input-error');
+            function getById(numAsegurado) {
+                if (document.getElementById("txtNumAsegurado").value !== "") {
+                    document.getElementById("txtNumAsegurado").classList.remove('input-error');
                     document.getElementById("oculto").value = "GETBYID";
-                    document.getElementById("seleccionado").value = cedula;
+                    document.getElementById("seleccionado").value = numAsegurado;
                     return true;
-
-
                 } else {
-                    alert("Agregar cédula a buscar");
-                    document.getElementById("txtCedula").classList.add('input-error');
+                    alert("Agregar # asegurado a buscar");
+                    document.getElementById("txtNumAsegurado").classList.add('input-error');
                     return false;
                 }
             }
@@ -117,14 +118,14 @@
                 document.getElementById("oculto").value = "LIMPIAR";
                 return true;
             }
-            function eliminar(cedula) {
+            function eliminar(numAsegurado) {
                 document.getElementById("oculto").value = "ELIMINAR";
-                document.getElementById("eliminado").value = cedula;
-                alert("Doctor eliminado");
+                document.getElementById("eliminado").value = numAsegurado;
+                alert("Paciente eliminado");
             }
-            function seleccionar(cedula) {
+            function seleccionar(numAsegurado) {
                 document.getElementById("oculto").value = "SELECCIONAR";
-                document.getElementById("seleccionado").value = cedula;
+                document.getElementById("seleccionado").value = numAsegurado;
             }
 
         </script>
@@ -133,51 +134,46 @@
     <body>
         <% if (session.getAttribute("nombreUsuario") != null) {
 
-                if (request.getAttribute("cedula") == null) {
-                    request.setAttribute("cedula", "");
+                if (request.getAttribute("numAsegurado") == null) {
+                    request.setAttribute("numAsegurado", "");
                 }
                 if (request.getAttribute("nombre") == null) {
                     request.setAttribute("nombre", "");
                 }
-                if (request.getAttribute("apellidos") == null) {
-                    request.setAttribute("apellidos", "");
-                }
-                if (request.getAttribute("especialidad") == null) {
-                    request.setAttribute("especialidad", "");
-                }
-
                 if (request.getAttribute("direccion") == null) {
                     request.setAttribute("direccion", "");
                 }
-
-                if (request.getAttribute("salario") == null) {
-                    request.setAttribute("salario", "");
+                if (request.getAttribute("fechaNacimiento") == null) {
+                    request.setAttribute("fechaNacimiento", "");
+                }
+                if (request.getAttribute("email") == null) {
+                    request.setAttribute("email", "");
                 }
                 if (request.getAttribute("telefono") == null) {
                     request.setAttribute("telefono", "");
                 }
-
-
+                if (request.getAttribute("profesion") == null) {
+                    request.setAttribute("profesion", "");
+                }
         %>
 
         <div style="text-align: right; margin-right: 30px;">
             Hola <%= session.getAttribute("nombreUsuario")%>
             <br/>
             <%= DateTimeFormatter.ofPattern("MM-dd-yyyy", Locale.ENGLISH).format(LocalDateTime.now())%> 
-
         </div>
 
-        <h1>Mantenimiento de Doctores</h1>
-        <form  method="get" action="ServletMantDoctor">
+        <h1>Mantenimiento de Pacientes</h1>
+        <form  method="get" action="ServletMantPaciente">
             <table border="1">
                 <tr>
-                    <td>Cédula</td>
+                    <td># Asegurado</td>
                     <td>
-                        <% if (request.getAttribute("cedula") != "") {%>
-                        <input type="number" min="0" id="txtCedula" name="cedula" readonly="true" value="<%=request.getAttribute("cedula")%>"/>
+                        <% if (request.getAttribute("numAsegurado") != "") {%>
+                        <input type="number" min="0" id="txtNumAsegurado" name="numAsegurado" readonly="true" value="<%=request.getAttribute("numAsegurado")%>"/>
                         <% } else {%>
-                        <input type="number" min="0" id="txtCedula" name="cedula" value="<%=request.getAttribute("cedula")%>"/>
-                        <%}%>
+                        <input type="number" min="0" id="txtNumAsegurado" name="numAsegurado" value="<%=request.getAttribute("numAsegurado")%>"/>
+                        <%}%> 
                     </td>
                 </tr>
                 <tr>
@@ -186,42 +182,49 @@
                         <input type="text" id="txtNombre" name="nombre" value="<%=request.getAttribute("nombre")%>"/>
                     </td>
                 </tr>
+
                 <tr>
-                    <td>Apellidos</td>
-                    <td>
-                        <input type="text" id="txtApellidos" name="apellidos" value="<%=request.getAttribute("apellidos")%>"/>
-                    </td>
-                </tr>
-                <tr>
-                <tr>
-                    <td>Especialidad</td>
-                    <td>
-                        <input type="text" id="txtEspecialidad" name="especialidad" value="<%=request.getAttribute("especialidad")%>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Salario</td>
-                    <td>
-                        <input type="number" step="0.01" id="txtSalario" name="salario" value="<%=request.getAttribute("salario")%>"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Direccion</td>
+                    <td>Dirección</td>
                     <td>
                         <input type="text" id="txtDireccion" name="direccion" value="<%=request.getAttribute("direccion")%>"/>
                     </td>
                 </tr>
                 <tr>
+                <tr>
+                    <td>Fecha</td>
+                    <td>
+                        <% if (request.getAttribute("numAsegurado") != "") {%>
+                        <input type="date" id="txtFechaNacimiento" name="fechaNacimiento" readonly="true" value="<%=request.getAttribute("fechaNacimiento")%>"/>
+                        <% } else {%>
+                        <input type="date" id="txtNumAsegurado" name="numAsegurado" value="1950-01-01"/>
+                        <%}%>
+                    </td>
+
+
+                </tr>
+                <tr>
+                    <td>Correo</td>
+                    <td>
+                        <input type="text" id="txtEmail" name="email" value="<%=request.getAttribute("email")%>"/>
+                    </td>
+                </tr>
+                <tr>
                     <td>Teléfono</td>
                     <td>
-                        <input type="number" min="0"  id="telefono" name="telefono" value="<%=request.getAttribute("telefono")%>"/>
+                        <input type="number" min="0" id="txtTelefono" name="telefono" value="<%=request.getAttribute("telefono")%>"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Profesión</td>
+                    <td>
+                        <input type="text" id="txtProfesion" name="profesion" value="<%=request.getAttribute("profesion")%>"/>
                     </td>
                 </tr>
             </table>
             <br/>
             <input type="submit" value="Registrar" onclick="return registrar();"/>
             <input type="submit" value="Modificar" onclick="return modificar();"/>
-            <input type="submit" value="Consultar por cédula" onclick="return getById();"/>
+            <input type="submit" value="Consultar por # asegurado" onclick="return getById();"/>
             <input type="submit" value="Consultar por nombre" onclick="return getByName();"/>
             <input type="submit" value="Limpiar" onclick=" return limpiar();"/>
             <input type ="hidden" id="oculto" name="accion"/>
@@ -232,73 +235,76 @@
 
             <table border="1">
                 <tr>
-                    <th>Cédula</th>
+                    <th># Asegurado</th>
                     <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Especialidad</th>
-                    <th>Salario</th>
-                    <th>Direccion</th>
+                    <th>Dirección</th>
+                    <th>Fecha nacimiento</th>
+                    <th>Edad</th>
+                    <th>Correo</th>
                     <th>Teléfono</th>
+                    <th>Profesión</th>
                     <th>Seleccionar</th>
                     <th>Eliminar</th>
                 </tr>
 
-                <%! List<Doctor> list = new ArrayList<>(); %>
-                <%! DoctorBo docBo = new DoctorBo();%>
+                <%! List<Paciente> list = new ArrayList<>(); %>
+                <%! PacienteBo pacBo = new PacienteBo();%>
                 <%
                     if (request.getParameter("getbyid") != null) {
                         int cedula = Integer.parseInt(request.getParameter("getbyid"));
-                        Doctor obj = this.docBo.getById(cedula);
+                        Paciente obj = this.pacBo.getById(cedula);
                         this.list = new ArrayList<>();
                         if (obj == null) {
                             out.print("<h4>No hay resultados</h4>");
                         } else {
                             list.add(obj);
                         }
-
                     } else if (request.getParameter("getbyname") != null) {
-                        this.list = this.docBo.getByName(request.getParameter("getbyname"));
+                        this.list = this.pacBo.getByName(request.getParameter("getbyname"));
                         if (list == null) {
                             out.print("<h4>No hay resultados</h4>");
                         }
                     } else {
-                        this.list = docBo.getAll();
+                        this.list = pacBo.getAll();
                     }
 
                     for (int i = 0; i < list.size(); i++) {
-                        Doctor doc = list.get(i);
+                        Paciente pac = list.get(i);
                         out.println("<tr>");
 
                         out.println("<td>");
-                        out.println(doc.getCedula());
+                        out.println(pac.getNumAsegurado());
                         out.println("</td>");
                         out.println("<td>");
-                        out.println(doc.getNombre());
+                        out.println(pac.getNombre());
                         out.println("</td>");
                         out.println("<td>");
-                        out.println(doc.getApellido());
+                        out.println(pac.getDireccion());
                         out.println("</td>");
                         out.println("<td>");
-                        out.println(doc.getEspecialidad());
+                        out.println(pac.getFechaNacimiento());
                         out.println("</td>");
                         out.println("<td>");
-                        out.println(doc.getSalario());
+                        out.println(pac.getEdad());
                         out.println("</td>");
                         out.println("<td>");
-                        out.println(doc.getDireccion());
+                        out.println(pac.getEmail());
                         out.println("</td>");
                         out.println("<td>");
-                        out.println(doc.getTelefono());
+                        out.println(pac.getTelefono());
+                        out.println("</td>");
+                        out.println("<td>");
+                        out.println(pac.getProfesion());
                         out.println("</td>");
 
                 %>
                 <td>
                     <input type="image" src="img/select.png"
-                           width="25px" onclick="return seleccionar(<%= doc.getCedula()%>)" />
+                           width="25px" onclick="return seleccionar(<%= pac.getNumAsegurado()%>)" />
                 </td>
                 <td>
                     <input type="image" src="img/delete.png"
-                           width="25px" onclick="return eliminar(<%= doc.getCedula()%>)" />
+                           width="25px" onclick="return eliminar(<%= pac.getNumAsegurado()%>)" />
                 </td>
                 <%  out.println("</tr>");
                     }

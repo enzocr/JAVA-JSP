@@ -52,13 +52,15 @@
             }
             function registrar() {
                 if (validarDatos()) {
-                    if (isNaN(document.getElementById("txtCedula").value)) {
-                        document.getElementById("txtCedula").classList.add('input-error');
-                        alert("Favor solo ingresar números en la cédula");
-                        return false;
-                    } else {
+                    if (isNaN(document.getElementById("txtNombre").value)) {
+                        document.getElementById("txtNombre").classList.remove('input-error');
                         document.getElementById("oculto").value = "REGISTRAR";
+                        document.getElementById("seleccionado").value = cedula;
                         return true;
+                    } else {
+                        document.getElementById("txtNombre").classList.add('input-error');
+                        alert("Favor solo ingresar letras en el nombre");
+                        return false;
                     }
 
                 } else {
@@ -80,16 +82,12 @@
 
             function getById(cedula) {
                 if (document.getElementById("txtCedula").value !== "") {
-                    if (isNaN(document.getElementById("txtCedula").value)) {
-                        document.getElementById("txtCedula").classList.add('input-error');
-                        alert("Favor solo ingresar números en la cédula");
-                        return false;
-                    } else {
-                        document.getElementById("txtCedula").classList.remove('input-error');
-                        document.getElementById("oculto").value = "GETBYID";
-                        document.getElementById("seleccionado").value = cedula;
-                        return true;
-                    }
+
+                    document.getElementById("txtCedula").classList.remove('input-error');
+                    document.getElementById("oculto").value = "GETBYID";
+                    document.getElementById("seleccionado").value = cedula;
+                    return true;
+
 
                 } else {
                     alert("Agregar cédula a buscar");
@@ -99,13 +97,19 @@
             }
             function getByName(name) {
                 if (document.getElementById("txtNombre").value !== "") {
-                    document.getElementById("txtNombre").classList.remove('input-error');
-                    document.getElementById("oculto").value = "GETBYNAME";
-                    document.getElementById("seleccionado").value = name;
-                    return true;
+                    if (isNaN(document.getElementById("txtNombre").value)) {
+                        document.getElementById("txtNombre").classList.remove('input-error');
+                        document.getElementById("oculto").value = "GETBYNAME";
+                        document.getElementById("seleccionado").value = name;
+                        return true;
+                    } else {
+                        document.getElementById("txtNombre").classList.add('input-error');
+                        alert("Favor solo ingresar letras en el nombre");
+                        return false;
+                    }
                 } else {
-                    document.getElementById("txtNombre").classList.add('input-error');
                     alert("Agregar nombre(s) a buscar");
+                    document.getElementById("txtNombre").classList.add('input-error');
                     return false;
                 }
             }
@@ -160,6 +164,7 @@
             Hola <%= session.getAttribute("nombreUsuario")%>
             <br/>
             <%= DateTimeFormatter.ofPattern("MM-dd-yyyy", Locale.ENGLISH).format(LocalDateTime.now())%> 
+
         </div>
 
         <h1>Mantenimiento de Doctores</h1>
@@ -169,9 +174,9 @@
                     <td>Cédula</td>
                     <td>
                         <% if (request.getAttribute("cedula") != "") {%>
-                        <input type="text" id="txtCedula" name="cedula" readonly="true" value="<%=request.getAttribute("cedula")%>"/>
+                        <input type="number" min="0" id="txtCedula" name="cedula" readonly="true" value="<%=request.getAttribute("cedula")%>"/>
                         <% } else {%>
-                        <input type="text" id="txtCedula" name="cedula" value="<%=request.getAttribute("cedula")%>"/>
+                        <input type="number" min="0" id="txtCedula" name="cedula" value="<%=request.getAttribute("cedula")%>"/>
                         <%}%>
                     </td>
                 </tr>
@@ -209,7 +214,7 @@
                 <tr>
                     <td>Teléfono</td>
                     <td>
-                        <input type="number" id="telefono" name="telefono" value="<%=request.getAttribute("telefono")%>"/>
+                        <input type="number" min="0"  id="telefono" name="telefono" value="<%=request.getAttribute("telefono")%>"/>
                     </td>
                 </tr>
             </table>
@@ -251,6 +256,11 @@
                             list.add(obj);
                         }
 
+                    } else if (request.getParameter("getbyname") != null) {
+                        this.list = this.docBo.getByName(request.getParameter("getbyname"));
+                        if (list == null) {
+                            out.print("<h4>No hay resultados</h4>");
+                        }
                     } else {
                         this.list = docBo.getAll();
                     }

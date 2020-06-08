@@ -3,6 +3,8 @@ package org.apache.jsp;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
+import negocio.bo.HerramientaMedicaBo;
+import negocio.clases.HerramientaMedica;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -13,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
-public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
+public final class mantHerramientaMedica_jsp extends org.apache.jasper.runtime.HttpJspBase
     implements org.apache.jasper.runtime.JspSourceDependent {
 
- List<Doctor> list = new ArrayList<>(); 
- DoctorBo docBo = new DoctorBo();
+ List<HerramientaMedica> list = new ArrayList<>(); 
+ HerramientaMedicaBo herrBo = new HerramientaMedicaBo();
   private static final JspFactory _jspxFactory = JspFactory.getDefaultFactory();
 
   private static java.util.List<String> _jspx_dependants;
@@ -64,6 +66,8 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\n");
       out.write("\n");
       out.write("\n");
+      out.write("\n");
+      out.write("\n");
       out.write("<!DOCTYPE html>\n");
       out.write("<html>\n");
       out.write("    <head>\n");
@@ -81,8 +85,6 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                let aInputs = document.querySelectorAll('input[type=\"text\"]');\n");
       out.write("                let aNumbers = document.querySelectorAll('input[type=\"number\"]');\n");
       out.write("                let bError = true;\n");
-      out.write("\n");
-      out.write("\n");
       out.write("\n");
       out.write("                for (let i = 0; i < aInputs.length; i++) {\n");
       out.write("                    if (aInputs[i].value === '') {\n");
@@ -104,12 +106,42 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            }\n");
       out.write("            function registrar() {\n");
       out.write("                if (validarDatos()) {\n");
-      out.write("                    if (isNaN(document.getElementById(\"txtCedula\"))) {\n");
-      out.write("                        document.getElementById(\"txtCedula\").classList.add('input-error');\n");
-      out.write("                        alert(\"Favor solo ingresar números en la cédula\");\n");
+      out.write("                    let cantTotal = document.getElementById(\"nmbCantTotal\").value;\n");
+      out.write("                    let cantPrestada = document.getElementById(\"nmbCantPrestada\").value;\n");
+      out.write("\n");
+      out.write("                    if (cantTotal < cantPrestada) {\n");
+      out.write("                        document.getElementById(\"nmbCantTotal\").classList.add('input-error');\n");
+      out.write("                        document.getElementById(\"nmbCantPrestada\").classList.add('input-error');\n");
+      out.write("                        alert(\"La cantidad total de herramientas no puede ser menor que la cantidad prestada\")\n");
       out.write("                        return false;\n");
       out.write("                    } else {\n");
+      out.write("                        document.getElementById(\"nmbCantTotal\").classList.remove('input-error');\n");
+      out.write("                        document.getElementById(\"nmbCantPrestada\").classList.remove('input-error');\n");
       out.write("                        document.getElementById(\"oculto\").value = \"REGISTRAR\";\n");
+      out.write("                        document.getElementById(\"seleccionado\").value = codigo;\n");
+      out.write("                        return true;\n");
+      out.write("                    }\n");
+      out.write("                } else {\n");
+      out.write("                    alert(\"Por favor llenar espacios marcados\");\n");
+      out.write("                    return false;\n");
+      out.write("                }\n");
+      out.write("            }\n");
+      out.write("            function modificar(codigo) {\n");
+      out.write("                if (validarDatos()) {\n");
+      out.write("\n");
+      out.write("                    let cantTotal = document.getElementById(\"nmbCantTotal\").value;\n");
+      out.write("                    let cantPrestada = document.getElementById(\"nmbCantPrestada\").value;\n");
+      out.write("\n");
+      out.write("                    if (cantTotal < cantPrestada) {\n");
+      out.write("                        document.getElementById(\"nmbCantTotal\").classList.add('input-error');\n");
+      out.write("                        document.getElementById(\"nmbCantPrestada\").classList.add('input-error');\n");
+      out.write("                        alert(\"La cantidad total de herramientas no puede ser menor que la cantidad prestada\");\n");
+      out.write("                        return false;\n");
+      out.write("                    } else {\n");
+      out.write("                        document.getElementById(\"nmbCantTotal\").classList.remove('input-error');\n");
+      out.write("                        document.getElementById(\"nmbCantPrestada\").classList.remove('input-error');\n");
+      out.write("                        document.getElementById(\"oculto\").value = \"MODIFICAR\";\n");
+      out.write("                        document.getElementById(\"seleccionado\").value = codigo;\n");
       out.write("                        return true;\n");
       out.write("                    }\n");
       out.write("\n");
@@ -118,41 +150,30 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                    return false;\n");
       out.write("                }\n");
       out.write("            }\n");
-      out.write("            function modificar(cedula) {\n");
-      out.write("                if (validarDatos()) {\n");
-      out.write("                    alert(\"Doctor modificado\");\n");
-      out.write("                    document.getElementById(\"oculto\").value = \"MODIFICAR\";\n");
-      out.write("                    document.getElementById(\"seleccionado\").value = cedula;\n");
+      out.write("\n");
+      out.write("            function getByCode(codigo) {\n");
+      out.write("                if (document.getElementById(\"txtCodigo\").value !== \"\") {\n");
+      out.write("\n");
+      out.write("                    document.getElementById(\"txtCodigo\").classList.remove('input-error');\n");
+      out.write("                    document.getElementById(\"oculto\").value = \"GETBYCODE\";\n");
+      out.write("                    document.getElementById(\"seleccionado\").value = codigo;\n");
       out.write("                    return true;\n");
       out.write("                } else {\n");
-      out.write("                    alert(\"Por favor llenar espacios marcados\");\n");
+      out.write("                    alert(\"Agregar código a buscar\");\n");
+      out.write("                    document.getElementById(\"txtCodigo\").classList.add('input-error');\n");
       out.write("                    return false;\n");
       out.write("                }\n");
       out.write("            }\n");
-      out.write("\n");
-      out.write("            function getById(cedula) {\n");
-      out.write("                if (document.getElementById(\"txtCedula\").value !== \"\") {\n");
-      out.write("\n");
-      out.write("                    document.getElementById(\"txtCedula\").classList.remove('input-error');\n");
-      out.write("                    document.getElementById(\"oculto\").value = \"GETBYID\";\n");
-      out.write("                    document.getElementById(\"seleccionado\").value = cedula;\n");
+      out.write("            function getByDesc(descripcion) {\n");
+      out.write("                if (document.getElementById(\"txtDescripcion\").value !== \"\") {\n");
+      out.write("                    document.getElementById(\"txtDescripcion\").classList.remove('input-error');\n");
+      out.write("                    document.getElementById(\"oculto\").value = \"GETBYDESC\";\n");
+      out.write("                    document.getElementById(\"seleccionado\").value = descripcion;\n");
       out.write("                    return true;\n");
       out.write("\n");
       out.write("                } else {\n");
-      out.write("                    alert(\"Agregar cédula a buscar\");\n");
-      out.write("                    document.getElementById(\"txtCedula\").classList.add('input-error');\n");
-      out.write("                    return false;\n");
-      out.write("                }\n");
-      out.write("            }\n");
-      out.write("            function getByName(name) {\n");
-      out.write("                if (document.getElementById(\"txtNombre\").value !== \"\") {\n");
-      out.write("                    document.getElementById(\"txtNombre\").classList.remove('input-error');\n");
-      out.write("                    document.getElementById(\"oculto\").value = \"GETBYNAME\";\n");
-      out.write("                    document.getElementById(\"seleccionado\").value = name;\n");
-      out.write("                    return true;\n");
-      out.write("                } else {\n");
-      out.write("                    document.getElementById(\"txtNombre\").classList.add('input-error');\n");
-      out.write("                    alert(\"Agregar nombre(s) a buscar\");\n");
+      out.write("                    alert(\"Agregar descripcion(s) a buscar\");\n");
+      out.write("                    document.getElementById(\"txtDescripcion\").classList.add('input-error');\n");
       out.write("                    return false;\n");
       out.write("                }\n");
       out.write("            }\n");
@@ -160,14 +181,14 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                document.getElementById(\"oculto\").value = \"LIMPIAR\";\n");
       out.write("                return true;\n");
       out.write("            }\n");
-      out.write("            function eliminar(cedula) {\n");
+      out.write("            function eliminar(codigo) {\n");
       out.write("                document.getElementById(\"oculto\").value = \"ELIMINAR\";\n");
-      out.write("                document.getElementById(\"eliminado\").value = cedula;\n");
-      out.write("                alert(\"Doctor eliminado\");\n");
+      out.write("                document.getElementById(\"eliminado\").value = codigo;\n");
+      out.write("                alert(\"Herramienta médica eliminada\");\n");
       out.write("            }\n");
-      out.write("            function seleccionar(cedula) {\n");
+      out.write("            function seleccionar(codigo) {\n");
       out.write("                document.getElementById(\"oculto\").value = \"SELECCIONAR\";\n");
-      out.write("                document.getElementById(\"seleccionado\").value = cedula;\n");
+      out.write("                document.getElementById(\"seleccionado\").value = codigo;\n");
       out.write("            }\n");
       out.write("\n");
       out.write("        </script>\n");
@@ -177,31 +198,18 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("        ");
  if (session.getAttribute("nombreUsuario") != null) {
 
-                if (request.getAttribute("cedula") == null) {
-                    request.setAttribute("cedula", "");
+                if (request.getAttribute("codigo") == null) {
+                    request.setAttribute("codigo", "");
                 }
-                if (request.getAttribute("nombre") == null) {
-                    request.setAttribute("nombre", "");
+                if (request.getAttribute("descripcion") == null) {
+                    request.setAttribute("descripcion", "");
                 }
-                if (request.getAttribute("apellidos") == null) {
-                    request.setAttribute("apellidos", "");
+                if (request.getAttribute("cantTotal") == null) {
+                    request.setAttribute("cantTotal", "");
                 }
-                if (request.getAttribute("especialidad") == null) {
-                    request.setAttribute("especialidad", "");
+                if (request.getAttribute("cantPrestada") == null) {
+                    request.setAttribute("cantPrestada", "");
                 }
-
-                if (request.getAttribute("direccion") == null) {
-                    request.setAttribute("direccion", "");
-                }
-
-                if (request.getAttribute("salario") == null) {
-                    request.setAttribute("salario", "");
-                }
-                if (request.getAttribute("telefono") == null) {
-                    request.setAttribute("telefono", "");
-                }
-
-
         
       out.write("\n");
       out.write("\n");
@@ -213,25 +221,26 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            ");
       out.print( DateTimeFormatter.ofPattern("MM-dd-yyyy", Locale.ENGLISH).format(LocalDateTime.now()));
       out.write(" \n");
+      out.write("\n");
       out.write("        </div>\n");
       out.write("\n");
-      out.write("        <h1>Mantenimiento de Doctores</h1>\n");
-      out.write("        <form  method=\"get\" action=\"ServletMantDoctor\">\n");
+      out.write("        <h1>Mantenimiento de Herramientas Médicas</h1>\n");
+      out.write("        <form  method=\"get\" action=\"ServletMantHerramientaMedica\">\n");
       out.write("            <table border=\"1\">\n");
       out.write("                <tr>\n");
-      out.write("                    <td>Cédula</td>\n");
+      out.write("                    <td>Código</td>\n");
       out.write("                    <td>\n");
       out.write("                        ");
- if (request.getAttribute("cedula") != "") {
+ if (request.getAttribute("codigo") != "") {
       out.write("\n");
-      out.write("                        <input type=\"text\" id=\"txtCedula\" name=\"cedula\" readonly=\"true\" value=\"");
-      out.print(request.getAttribute("cedula"));
+      out.write("                        <input type=\"number\" min=\"0\" id=\"txtCodigo\" name=\"codigo\" readonly=\"true\" value=\"");
+      out.print(request.getAttribute("codigo"));
       out.write("\"/>\n");
       out.write("                        ");
  } else {
       out.write("\n");
-      out.write("                        <input type=\"text\" id=\"txtCedula\" name=\"cedula\" value=\"");
-      out.print(request.getAttribute("cedula"));
+      out.write("                        <input type=\"number\"  min=\"0\" id=\"txtCodigo\" name=\"codigo\" value=\"");
+      out.print(request.getAttribute("codigo"));
       out.write("\"/>\n");
       out.write("                        ");
 }
@@ -239,60 +248,39 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                    </td>\n");
       out.write("                </tr>\n");
       out.write("                <tr>\n");
-      out.write("                    <td>Nombre</td>\n");
+      out.write("                    <td>Descripción</td>\n");
       out.write("                    <td>\n");
-      out.write("                        <input type=\"text\" id=\"txtNombre\" name=\"nombre\" value=\"");
-      out.print(request.getAttribute("nombre"));
+      out.write("                        <input type=\"text\"  id=\"txtDescripcion\" name=\"descripcion\" value=\"");
+      out.print(request.getAttribute("descripcion"));
       out.write("\"/>\n");
       out.write("                    </td>\n");
       out.write("                </tr>\n");
+      out.write("\n");
       out.write("                <tr>\n");
-      out.write("                    <td>Apellidos</td>\n");
+      out.write("                    <td>Cantidad total</td>\n");
       out.write("                    <td>\n");
-      out.write("                        <input type=\"text\" id=\"txtApellidos\" name=\"apellidos\" value=\"");
-      out.print(request.getAttribute("apellidos"));
+      out.write("                        <input type=\"number\"  min=\"0\" id=\"nmbCantTotal\" name=\"cantTotal\" value=\"");
+      out.print(request.getAttribute("cantTotal"));
       out.write("\"/>\n");
       out.write("                    </td>\n");
       out.write("                </tr>\n");
+      out.write("\n");
       out.write("                <tr>\n");
-      out.write("                <tr>\n");
-      out.write("                    <td>Especialidad</td>\n");
+      out.write("                    <td>Cantidad prestada</td>\n");
       out.write("                    <td>\n");
-      out.write("                        <input type=\"text\" id=\"txtEspecialidad\" name=\"especialidad\" value=\"");
-      out.print(request.getAttribute("especialidad"));
+      out.write("                        <input type=\"number\" min=\"0\" id=\"nmbCantPrestada\" name=\"cantPrestada\" value=\"");
+      out.print(request.getAttribute("cantPrestada"));
       out.write("\"/>\n");
       out.write("                    </td>\n");
       out.write("                </tr>\n");
-      out.write("                <tr>\n");
-      out.write("                    <td>Salario</td>\n");
-      out.write("                    <td>\n");
-      out.write("                        <input type=\"number\" step=\"0.01\" id=\"txtSalario\" name=\"salario\" value=\"");
-      out.print(request.getAttribute("salario"));
-      out.write("\"/>\n");
-      out.write("                    </td>\n");
-      out.write("                </tr>\n");
-      out.write("                <tr>\n");
-      out.write("                    <td>Direccion</td>\n");
-      out.write("                    <td>\n");
-      out.write("                        <input type=\"text\" id=\"txtDireccion\" name=\"direccion\" value=\"");
-      out.print(request.getAttribute("direccion"));
-      out.write("\"/>\n");
-      out.write("                    </td>\n");
-      out.write("                </tr>\n");
-      out.write("                <tr>\n");
-      out.write("                    <td>Teléfono</td>\n");
-      out.write("                    <td>\n");
-      out.write("                        <input type=\"number\" id=\"telefono\" name=\"telefono\" value=\"");
-      out.print(request.getAttribute("telefono"));
-      out.write("\"/>\n");
-      out.write("                    </td>\n");
-      out.write("                </tr>\n");
+      out.write("\n");
+      out.write("\n");
       out.write("            </table>\n");
       out.write("            <br/>\n");
       out.write("            <input type=\"submit\" value=\"Registrar\" onclick=\"return registrar();\"/>\n");
       out.write("            <input type=\"submit\" value=\"Modificar\" onclick=\"return modificar();\"/>\n");
-      out.write("            <input type=\"submit\" value=\"Consultar por cédula\" onclick=\"return getById();\"/>\n");
-      out.write("            <input type=\"submit\" value=\"Consultar por nombre\" onclick=\"return getByName();\"/>\n");
+      out.write("            <input type=\"submit\" value=\"Consultar por código\" onclick=\"return getByCode();\"/>\n");
+      out.write("            <input type=\"submit\" value=\"Consultar por descripción\" onclick=\"return getByDesc();\"/>\n");
       out.write("            <input type=\"submit\" value=\"Limpiar\" onclick=\" return limpiar();\"/>\n");
       out.write("            <input type =\"hidden\" id=\"oculto\" name=\"accion\"/>\n");
       out.write("            <input type =\"hidden\" id=\"seleccionado\" name=\"seleccionado\"/>\n");
@@ -302,13 +290,10 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\n");
       out.write("            <table border=\"1\">\n");
       out.write("                <tr>\n");
-      out.write("                    <th>Cédula</th>\n");
-      out.write("                    <th>Nombre</th>\n");
-      out.write("                    <th>Apellidos</th>\n");
-      out.write("                    <th>Especialidad</th>\n");
-      out.write("                    <th>Salario</th>\n");
-      out.write("                    <th>Direccion</th>\n");
-      out.write("                    <th>Teléfono</th>\n");
+      out.write("                    <th>Código</th>\n");
+      out.write("                    <th>Descripción</th>\n");
+      out.write("                    <th>Cantidad total</th>\n");
+      out.write("                    <th>Cantidad prestada</th>\n");
       out.write("                    <th>Seleccionar</th>\n");
       out.write("                    <th>Eliminar</th>\n");
       out.write("                </tr>\n");
@@ -319,9 +304,9 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\n");
       out.write("                ");
 
-                    if (request.getParameter("getbyid") != null) {
-                        int cedula = Integer.parseInt(request.getParameter("getbyid"));
-                        Doctor obj = this.docBo.getById(cedula);
+                    if (request.getParameter("getbycode") != null) {
+                        int codigo = Integer.parseInt(request.getParameter("getbycode"));
+                        HerramientaMedica obj = this.herrBo.getByCode(codigo);
                         this.list = new ArrayList<>();
                         if (obj == null) {
                             out.print("<h4>No hay resultados</h4>");
@@ -329,34 +314,30 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
                             list.add(obj);
                         }
 
+                    } else if (request.getParameter("getbydesc") != null) {
+                        this.list = this.herrBo.getByDesc(request.getParameter("getbydesc"));
+                        if (list == null) {
+                            out.print("<h4>No hay resultados</h4>");
+                        }
                     } else {
-                        this.list = docBo.getAll();
+                        this.list = herrBo.getAll();
                     }
 
                     for (int i = 0; i < list.size(); i++) {
-                        Doctor doc = list.get(i);
+                        HerramientaMedica h = list.get(i);
                         out.println("<tr>");
 
                         out.println("<td>");
-                        out.println(doc.getCedula());
+                        out.println(h.getCodigo());
                         out.println("</td>");
                         out.println("<td>");
-                        out.println(doc.getNombre());
+                        out.println(h.getDescripcion());
                         out.println("</td>");
                         out.println("<td>");
-                        out.println(doc.getApellido());
+                        out.println(h.getCantTotal());
                         out.println("</td>");
                         out.println("<td>");
-                        out.println(doc.getEspecialidad());
-                        out.println("</td>");
-                        out.println("<td>");
-                        out.println(doc.getSalario());
-                        out.println("</td>");
-                        out.println("<td>");
-                        out.println(doc.getDireccion());
-                        out.println("</td>");
-                        out.println("<td>");
-                        out.println(doc.getTelefono());
+                        out.println(h.getCantidadPrestado());
                         out.println("</td>");
 
                 
@@ -364,13 +345,13 @@ public final class mantDoctor_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                <td>\n");
       out.write("                    <input type=\"image\" src=\"img/select.png\"\n");
       out.write("                           width=\"25px\" onclick=\"return seleccionar(");
-      out.print( doc.getCedula());
+      out.print( h.getCodigo());
       out.write(")\" />\n");
       out.write("                </td>\n");
       out.write("                <td>\n");
       out.write("                    <input type=\"image\" src=\"img/delete.png\"\n");
       out.write("                           width=\"25px\" onclick=\"return eliminar(");
-      out.print( doc.getCedula());
+      out.print( h.getCodigo());
       out.write(")\" />\n");
       out.write("                </td>\n");
       out.write("                ");

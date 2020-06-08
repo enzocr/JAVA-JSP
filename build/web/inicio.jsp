@@ -4,6 +4,9 @@
     Author     : Enzo Quartino Zamora <github.com/enzocr || email: enzoquartino@gmail.com>
 --%>
 
+<%@page import="java.time.format.DateTimeFormatter"%>
+<%@page import="java.time.LocalDateTime"%>
+<%@page import="java.util.Locale"%>
 <%@page import="java.util.Date"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -24,7 +27,7 @@
         <div style="text-align: right; margin-right: 30px;">
             Hola <%= session.getAttribute("nombreUsuario")%>
             <br/>
-            <%= new Date()%>
+            <%= DateTimeFormatter.ofPattern("MM-dd-yyyy", Locale.ENGLISH).format(LocalDateTime.now())%> 
         </div>
 
         <h1>Bienvenido al sistema SimameWeb</h1>

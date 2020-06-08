@@ -39,7 +39,7 @@ public class ServletMenu extends HttpServlet {
                 response.sendRedirect("mantPaciente.jsp");
                 break;
             case 3:
-                response.sendRedirect("mantHerramientasMedicas.jsp");
+                response.sendRedirect("mantHerramientaMedica.jsp");
                 break;
 
         }
