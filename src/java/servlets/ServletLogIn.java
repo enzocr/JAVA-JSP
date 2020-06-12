@@ -7,11 +7,14 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.System.out;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import negocio.bo.LogInBo;
+import negocio.clases.Usuario;
 
 /**
  *
@@ -34,16 +37,30 @@ public class ServletLogIn extends HttpServlet {
         String user = request.getParameter("user");
         String password = request.getParameter("password");
         HttpSession session = request.getSession();
-        if (user.equals("enzo")) {
-            if (password.equals("enzo")) {
+        Usuario usuario = new Usuario(user, password);
+        LogInBo bo = new LogInBo();
+
+        switch (bo.userExists(usuario)) {
+            case 1:
                 session.setAttribute("nombreUsuario", user);
                 response.sendRedirect("inicio.jsp");
-            } else {
+                break;
+            case 2:
                 response.sendRedirect("logInErroneo.html");
-            }
-        } else {
-            response.sendRedirect("logInErroneo.html");
+                break;
+            case 3:
+                response.sendRedirect("usuarioNoExiste.html");
+                break;
+            case 4:
+                response.sendRedirect("noConectoBd.html");
+                break;
+            case 5:
+                response.sendRedirect("errorInesperado.html");
+                break;
+            default:
+                break;
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

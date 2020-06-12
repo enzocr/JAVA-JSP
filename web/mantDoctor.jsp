@@ -163,8 +163,8 @@
         <div style="text-align: right; margin-right: 30px;">
             Hola <%= session.getAttribute("nombreUsuario")%>
             <br/>
-            <%= DateTimeFormatter.ofPattern("MM-dd-yyyy", Locale.ENGLISH).format(LocalDateTime.now())%> 
-
+              <%= DateTimeFormatter.ofPattern("MM-dd-yyyy", Locale.ENGLISH).format(LocalDateTime.now())%> 
+            <a href="inicio.jsp"><input type="submit" value="Volver a menu"></a>
         </div>
 
         <h1>Mantenimiento de Doctores</h1>
